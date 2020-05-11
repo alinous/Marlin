@@ -244,6 +244,7 @@
 //
 #if SD_CONNECTION_IS(ONBOARD)
   #define SOFTWARE_SPI                            // Use soft SPI for onboard SD
+  #define SD_DETECT_PIN PB11
   #define SDSS                              PA4
   #define SCK_PIN                           PA5
   #define MISO_PIN                          PA6
@@ -269,6 +270,7 @@
   #define BTN_ENC                           PA8
   #if SD_CONNECTION_IS(LCD)
     #define SDSS                            PB12  // Uses default hardware SPI for LCD's SD
+    #define SD_DETECT_PIN                   PF12
   #endif
 
   #if ENABLED(CR10_STOCKDISPLAY)

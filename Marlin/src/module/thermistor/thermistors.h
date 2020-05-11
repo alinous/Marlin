@@ -109,6 +109,9 @@
 #if ANY_THERMISTOR_IS(21) // Pt100 with INA826 amp with 3.3v excitation based on "Pt100 with INA826 amp on Ultimaker v2.0 electronics"
   #include "thermistor_21.h"
 #endif
+// #if ANY_THERMISTOR_IS(22) // Pt100 with E3D amp @ 3.3v w/4.7K pullup (BigTreeTech, etc.). Abbycus 2020
+//   #include "thermistor_22.h"
+// #endif
 #if ANY_THERMISTOR_IS(22) // Thermistor in a Rostock 301 hot end, calibrated with a multimeter
   #include "thermistor_22.h"
 #endif
