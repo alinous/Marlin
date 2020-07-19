@@ -27,4 +27,5 @@
 
 #define BOARD_INFO_NAME "BTT SKR Pro V1.1"
 
+
 #include "pins_BTT_SKR_PRO_common.h"

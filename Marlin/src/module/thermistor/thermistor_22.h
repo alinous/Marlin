@@ -19,54 +19,107 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
-// 100k hotend thermistor with 4.7k pull up to 3.3v and 220R to analog input as in GTM32 Pro vB
-const temp_entry_t temptable_22[] PROGMEM = {
-  { OV(   1), 352 },
-  { OV(   6), 341 },
-  { OV(  11), 330 },
-  { OV(  16), 319 },
-  { OV(  20), 307 },
-  { OV(  26), 296 },
-  { OV(  31), 285 },
-  { OV(  40), 274 },
-  { OV(  51), 263 },
-  { OV(  61), 251 },
-  { OV(  72), 245 },
-  { OV(  77), 240 },
-  { OV(  82), 237 },
-  { OV(  87), 232 },
-  { OV(  91), 229 },
-  { OV(  94), 227 },
-  { OV(  97), 225 },
-  { OV( 100), 223 },
-  { OV( 104), 221 },
-  { OV( 108), 219 },
-  { OV( 115), 214 },
-  { OV( 126), 209 },
-  { OV( 137), 204 },
-  { OV( 147), 200 },
-  { OV( 158), 193 },
-  { OV( 167), 192 },
-  { OV( 177), 189 },
-  { OV( 197), 163 },
-  { OV( 230), 174 },
-  { OV( 267), 165 },
-  { OV( 310), 158 },
-  { OV( 336), 151 },
-  { OV( 379), 143 },
-  { OV( 413), 138 },
-  { OV( 480), 127 },
-  { OV( 580), 110 },
-  { OV( 646), 100 },
-  { OV( 731),  88 },
-  { OV( 768),  84 },
-  { OV( 861),  69 },
-  { OV( 935),  50 },
-  { OV( 975),  38 },
-  { OV(1001),  27 },
-  { OV(1011),  22 },
-  { OV(1015),  13 },
-  { OV(1020),   6 },
-  { OV(1023),   0 }
+
+#define REVERSE_TEMP_SENSOR_RANGE
+
+// Marlin temperature sensor type 22
+//
+// This was created to allow use of the E3D PT100 amplifier on the BigTreeTech and similar boards 
+// without requiring any hardware mods (cutting resistors, etc.).
+// The BigTreeTech boards have a 3.3V ADC reference and a 4.7K pullup resistor 
+// connected to the Thermistor inputs so we can't use the standard Marlin temp sensor types.
+//
+// HARDWARE INSTALL:
+//
+// Since the BigTreeTech board is not 5V tolerant you need to operate the 
+// E3D PT100 at 3.3V. Yes this board will operate at 3.3V but it won't report
+// temperatures beyond approx 360C.
+// 3.3V can be found on some BTT connectors (WIFI connector on the SKR 1.4)
+// Connect the output of the PT100 amp to the standard thermistor input on the BTT board.
+//
+// SOFTWARE INSTALL:
+//
+// This table must be compiled into the Marlin 2.0.x firmware. Locate and open the 
+// thermistors.h file and add the following text:
+//
+// #if ANY_THERMISTOR_IS(22) // Pt100 with E3D amp @ 3.3v w/4.7K pullup (BigTreeTech, etc.). Abbycus 2020
+//   #include "thermistor_22.h"
+// #endif
+//
+// In configuration.h:
+//      #define TEMP_SENSOR_0 22       // use 0 or 1
+//      #define HEATER_0_MAXTEMP 310   // set max temperature to less than 360
+//
+// CALCULATIONS:
+//
+// Array values below were derived from PT100 resistance vs temperature tables.
+//
+// Constants:
+//    Vref = 3.30V
+//    Rb = 4400 (resistance of two bridge resistors in the INA826 circuit)
+//    Rpu = 4700 (pullup resistor on thermistor input)
+//    Ramp = 100 (INA826 amp output resistor)
+//    RTD = Resistance @ temperature. Example 111 ohms at 25C.
+//      
+// Calculate Vo : output of the INA826 amplifier in the E3D PCB
+//    Vo = ((Vref / (RTD + Rb)) * RTD) * 10
+// Next calculate Vadc : output voltage with a 4.7K pullup on the thermistor input.
+//    Vadc = (((Vref - Vo) / Rpu) * Ramp) + Vo
+// Lastly calculate ADC digital value for each point in the array below (10 bit ADC, 0 - 1023).
+//    ADC = (Vadc / Vref) * 1024
+//
+// Abby@Abbycus 2020
+//
+const short temptable_22[][2] PROGMEM = {
+  { OV(  0),    0 },
+  { OV(245),    1 },
+  { OV(253),   10 },
+  { OV(261),   20 },
+  { OV(270),   30 },
+  { OV(278),   40 },
+  { OV(287),   50 },
+  { OV(295),   60 },
+  { OV(303),   70 },
+  { OV(311),   80 },
+  { OV(319),   90 },
+  { OV(328),  100 },
+  { OV(336),  110 },
+  { OV(344),  120 },
+  { OV(352),  130 },
+  { OV(360),  140 },
+  { OV(368),  150 },
+  { OV(376),  160 },
+  { OV(384),  170 },
+  { OV(391),  180 },
+  { OV(399),  190 },
+  { OV(407),  200 },
+  { OV(415),  210 },
+  { OV(422),  220 },
+  { OV(430),  230 },
+  { OV(438),  240 },
+  { OV(445),  250 },
+  { OV(453),  260 },
+  { OV(460),  270 },
+  { OV(468),  280 },
+  { OV(475),  290 },
+  { OV(483),  300 },
+  { OV(490),  310 },
+  { OV(497),  320 },
+  { OV(505),  330 },
+  { OV(512),  340 },
+  { OV(519),  350 },
+  { OV(526),  360 },
+  { OV(533),  370 },
+  { OV(541),  380 },
+  { OV(548),  390 },
+  { OV(554),  400 },
+  { OV(623),  500 },
+  { OV(689),  600 },
+  { OV(751),  700 },
+  { OV(810),  800 },
+  { OV(850),  900 },
+  { OV(910), 1000 },
+  { OV(960), 1100 }
 };
