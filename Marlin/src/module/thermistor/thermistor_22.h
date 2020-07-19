@@ -21,6 +21,7 @@
  */
 #pragma once
 
+
 #define REVERSE_TEMP_SENSOR_RANGE
 
 // Marlin temperature sensor type 22
