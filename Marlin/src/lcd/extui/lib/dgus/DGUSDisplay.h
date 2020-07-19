@@ -54,10 +54,7 @@ public:
   // Variable access.
   static void WriteVariable(uint16_t adr, const void* values, uint8_t valueslen, bool isstr=false);
   static void WriteVariablePGM(uint16_t adr, const void* values, uint8_t valueslen, bool isstr=false);
-  template<typename T>
-  static void WriteVariable(uint16_t adr, T value) {
-    WriteVariable(adr, static_cast<const void*>(&value), sizeof(T));
-  }
+  static void WriteVariable(uint16_t adr, uint16_t value);
 
   // Until now I did not need to actively read from the display. That's why there is no ReadVariable
   // (I extensively use the auto upload of the display)
@@ -151,7 +148,7 @@ public:
     // Hook for live z adjust action
     static void HandleLiveAdjustZ(DGUS_VP_Variable &var, void *val_ptr);
   #endif
-  #if FAN_COUNT > 0
+  #if HAS_FAN
     // Hook for fan control
     static void HandleFanControl(DGUS_VP_Variable &var, void *val_ptr);
   #endif
@@ -221,7 +218,7 @@ public:
     static void DGUSLCD_SendPrintAccTimeToDisplay(DGUS_VP_Variable &var);
     static void DGUSLCD_SendPrintsTotalToDisplay(DGUS_VP_Variable &var);
   #endif
-  #if FAN_COUNT > 0
+  #if HAS_FAN
     static void DGUSLCD_SendFanStatusToDisplay(DGUS_VP_Variable &var);
   #endif
   static void DGUSLCD_SendHeaterStatusToDisplay(DGUS_VP_Variable &var);
